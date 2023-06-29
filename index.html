@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pizza Personalizer</title>
+  <!-- Includi CSS di Bulma -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
+  <!-- Includi CSS per la personalizzazione dell'immagine -->
+  <style>
+    .pizza-container {
+      position: relative;
+      width: 35rem;
+      height: 35rem;
+      background: url(pizza-margherita.png) no-repeat;
+      background-size: cover;
+    }
+
+    .pizza-ingredient {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      cursor: move;
+      z-index: 1;
+      user-select: none;
+    }
+
+    .ingredient-image {
+      width: 100%;
+      height: auto;
+      border-radius: 50%;
+    }
+
+    .ingredient-container {
+      display: flex;
+      flex-wrap: nowrap;
+      margin-top: 20px;
+      overflow-x: scroll;
+      padding-bottom: 20px;
+    }
+
+    .card {
+      width: 5rem;
+      margin-right: 16px;
+      margin-bottom: 16px;
+      font-size: smaller;
+    }
+
+    .reset-button {
+      margin-top: 20px;
+    }
+
+    .layout {
+  width: 1366px;
+  height: 768px;
+
+  display: grid;
+  grid:
+    "pizza pizza ordine" 1fr
+    "pizza pizza ordine" 1fr
+    "pizza pizza ordine" 1fr
+    "ingredienti ingredienti resetta" 1fr
+    / 1fr 1fr 1fr;
+  gap: 20px;
+}
+
+.pizza { grid-area: pizza; }
+.ordine { grid-area: ordine; }
+.ingredienti { grid-area: ingredienti; }
+.resetta { grid-area: resetta; }
+  </style>
+  <!-- Includi jQuery UI -->
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+</head>
+
+<body>
+  <div class="container mx-auto p-4 layout">
+    <div class="pizza-container pizza">
+      <!-- Nessuna immagine qui, l'immagine è impostata come sfondo del contenitore -->
+    </div>
+
+    <div class="order-container ordine">
+        <h2 class="title is-4">Ordinazione:</h2>
+        <ul class="order-list">
+          <li class="order-item">Pizza Margherita</li>
+        </ul>
+    </div>
+    
+    <div class="ingredient-container ingredienti">
+      <div class="card">
+        <div class="card-image">
+          <figure class="image is-4by3">
+            <img class="ingredient-image" src="pepperoni.png" alt="Pepperoni">
+          </figure>
+        </div>
+        <div class="card-content">
+          <div class="content">Pepperoni</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-image">
+          <figure class="image is-4by3">
+            <img class="ingredient-image" src="mushrooms.png" alt="Mushrooms">
+          </figure>
+        </div>
+        <div class="card-content">
+          <div class="content">Mushrooms</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-image">
+          <figure class="image is-4by3">
+            <img class="ingredient-image" src="onions.png" alt="Onions">
+          </figure>
+        </div>
+        <div class="card-content">
+          <div class="content">Onions</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-image">
+          <figure class="image is-4by3">
+            <img class="ingredient-image" src="mushrooms.png" alt="Mushrooms">
+          </figure>
+        </div>
+        <div class="card-content">
+          <div class="content">Mushrooms</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-image">
+          <figure class="image is-4by3">
+            <img class="ingredient-image" src="mushrooms.png" alt="Mushrooms">
+          </figure>
+        </div>
+        <div class="card-content">
+          <div class="content">Mushrooms</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-image">
+          <figure class="image is-4by3">
+            <img class="ingredient-image" src="mushrooms.png" alt="Mushrooms">
+          </figure>
+        </div>
+        <div class="card-content">
+          <div class="content">Mushrooms</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-image">
+          <figure class="image is-4by3">
+            <img class="ingredient-image" src="mushrooms.png" alt="Mushrooms">
+          </figure>
+        </div>
+        <div class="card-content">
+          <div class="content">Mushrooms</div>
+        </div>
+      </div>
+      <!-- Aggiungi qui altre card per gli ingredienti disponibili -->
+    </div>
+
+    <button class="button is-danger reset-button" onclick="resetPizza()">Resetta Pizza</button>
+  </div>
+
+  <!-- Includi jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Includi jQuery UI -->
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script>
+    $(function () {
+      // Abilita il drag and drop dell'immagine dell'ingrediente
+      $(".ingredient-container .card").draggable({
+            helper: "clone",
+            appendTo: "body",
+            zIndex: 100,
+            cursor: "move",
+            start: function(event, ui) {
+            $(this).addClass("dragging");
+            },
+            stop: function(event, ui) {
+            $(this).removeClass("dragging");
+            }
+        });
+
+      function addIngredientToOrder(ingredient) {
+        $(".order-list").append('<li class="order-item">' + ingredient + '</li>');
+        }
+
+        // Rimuovi l'ingrediente dall'elenco degli ordini
+        function removeIngredientFromOrder(ingredient) {
+            $(".order-item:contains(" + ingredient + ")").remove();
+        }
+
+      // Abilita il drop dell'immagine dell'ingrediente sulla pizza
+      $(".pizza-container").droppable({
+        accept: ".ingredient-container .card",
+        drop: function (event, ui) {
+            var ingredientImage = ui.helper.find("img").attr("src");
+          var xPos = ui.offset.left - $(this).offset().left;
+          var yPos = ui.offset.top - $(this).offset().top;
+          var radius = Math.min($(this).width(), $(this).height()) / 2 - 40; // Raggio massimo (ridotto di 20)
+          var center = { x: $(this).width() / 2, y: $(this).height() / 2 }; // Centro della pizza
+
+          // Genera 8 ingredienti posizionati casualmente all'interno dell'area della circonferenza
+          for (var i = 0; i < 25; i++) {
+            var angle = Math.random() * 2 * Math.PI; // Angolo casuale
+            var distance = Math.random() * radius; // Distanza casuale dal centro alla circonferenza
+            var x = center.x + distance * Math.cos(angle) - 25; // Sottrai metà della larghezza dell'ingrediente per centrarlo
+            var y = center.y + distance * Math.sin(angle) - 25; // Sottrai metà dell'altezza dell'ingrediente per centrarlo
+            var scale = Math.random() * 0.4 + 1; // Scala casuale tra 1 e 1.4
+            var rotation = Math.random() * 360; // Rotazione casuale tra 0 e 360 gradi
+            var $ingredient = $('<div class="pizza-ingredient" style="left: ' + x + 'px; top: ' + y + 'px; transform: scale(' + scale + ') rotate(' + rotation + 'deg);"><img class="ingredient-image" src="' + ingredientImage + '" alt="Ingredient"></div>');
+            $(this).append($ingredient);
+          }
+          addIngredientToOrder(ingredientImage);
+        }
+      });
+    });
+
+    function resetPizza() {
+      $(".pizza-container").empty();
+    $(".order-item").not(":first").remove();
+    }
+  </script>
+</body>
+
+</html>
